@@ -2,7 +2,7 @@
 import requests
 import re
 
-class monarchhd():
+class monarchhdx():
     """Connect and control Matrox Monarch HD"""
 
     BASE_URL = 'http://%s/Monarch/syncconnect/sdk.aspx?command=%s'
@@ -31,11 +31,12 @@ class monarchhd():
         result = self.__doQuery('GetStatus')
 
         # RECORD: <state>, STREAM:<mode>,<state>, NAME:<devicename>
-        p = re.compile(u'RECORD:(?P<record_state>[A-Z]+),STREAM:(?P<stream_mode>[A-Z]+),(?P<stream_state>[A-Z]+),NAME:(?P<device_name>.+)$', re.IGNORECASE)
+        p = re.compile(u'ENC1:(?P<enc1_mode>[A-Z]+),(?P<enc1_state>[A-Z]+),ENC2:(?P<enc2_mode>[A-Z]+),(?P<enc2_state>[A-Z]+),NAME:(?P<device_name>.+)$', re.IGNORECASE)
         s = re.search(p, result)
         if s:
-            return {'RESULT': 'SUCCESS', 'RECORD': {'STATE': s.group('record_state')},
-                    'STREAM': {'MODE': s.group('stream_mode'), 'STATE': s.group('stream_state')},
+            return {'RESULT': 'SUCCESS', 
+                    'ENC1': {'MODE': s.group('enc1_mode'), 'STATE': s.group('enc1_state')},
+                    'ENC2': {'MODE': s.group('enc2_mode'), 'STATE': s.group('enc2_state')},
                     'NAME': s.group('device_name')}
 
         return {'RESULT': 'FAILED'}
