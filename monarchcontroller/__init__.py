@@ -2,7 +2,7 @@
 import requests
 import re
 
-class monarchhd():
+class monarchhdx():
     """Connect and control Matrox Monarch HD"""
 
     BASE_URL = 'http://%s/Monarch/syncconnect/sdk.aspx?command=%s'
