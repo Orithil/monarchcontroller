@@ -161,7 +161,7 @@ class MonarchHDX(Controller):
         """Used to acquire the current stream and record status of a Monarch HD device."""
         result = self.__doQuery('GetStatus')
 
-        # RECORD: <state>, STREAM:<mode>,<state>, NAME:<devicename>
+        # ENC1:<mode>,<state>, ENC2:<mode>,<state>, NAME:<devicename>
         p = re.compile(u'ENC1:(?P<enc1_mode>[A-Z]+),(?P<enc1_state>[A-Z]+),ENC2:(?P<enc2_mode>[A-Z]+),(?P<enc2_state>[A-Z]+),NAME:(?P<device_name>.+)$', re.IGNORECASE)
         s = re.search(p, result)
         if s:
