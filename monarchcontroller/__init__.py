@@ -26,14 +26,14 @@ class Controller():
 
 class MonarchHD(Controller):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, ipAddress, username='admin', password='admin'):
+        super().__init__(ipAddress, username='admin', password='admin')
 
     ### STATUS ###
 
     def getStatus(self):
         """Used to acquire the current stream and record status of a Monarch HD device."""
-        result = self.__doQuery('GetStatus')
+        result = self._Controller__doQuery('GetStatus')
 
         # RECORD: <state>, STREAM:<mode>,<state>, NAME:<devicename>
         p = re.compile(u'RECORD:(?P<record_state>[A-Z]+),STREAM:(?P<stream_mode>[A-Z]+),(?P<stream_state>[A-Z]+),NAME:(?P<device_name>.+)$', re.IGNORECASE)
@@ -49,13 +49,13 @@ class MonarchHD(Controller):
 
     def startStreaming(self):
         """Used to start the stream function on a Monarch HD device that is set to RTMP mode."""
-        result = self.__doQuery('StartStreaming')
+        result = self._Controller__doQuery('StartStreaming')
 
         return {'RESULT': result}
 
     def stopStreaming(self):
         """Used to stop the stream function on a Monarch HD device that is set to RTMP mode."""
-        result = self.__doQuery('StopStreaming')
+        result = self._Controller__doQuery('StopStreaming')
 
         return {'RESULT': result}
 
@@ -63,13 +63,13 @@ class MonarchHD(Controller):
 
     def startRecording(self):
         """Used to start the record function on a Monarch HD device."""
-        result = self.__doQuery('StartRecording')
+        result = self._Controller__doQuery('StartRecording')
 
         return {'RESULT': result}
 
     def stopRecording(self):
         """Used to stop the record function on a Monarch HD device."""
-        result = self.__doQuery('StopRecording')
+        result = self._Controller__doQuery('StopRecording')
 
         return {'RESULT': result}
 
@@ -77,13 +77,13 @@ class MonarchHD(Controller):
 
     def startStreamingAndRecording(self):
         """Used to start the stream (RTMP mode) and record functions simultaneously on a Monarch HD device."""
-        result = self.__doQuery('StartStreamingAndRecording')
+        result = self._Controller__doQuery('StartStreamingAndRecording')
 
         return {'RESULT': result}
 
     def stopStreamingAndRecording(self):
         """Used to stop the stream (RTMP mode) and record functions simultaneously on a Monarch HD device."""
-        result = self.__doQuery('StopStreamingAndRecording')
+        result = self._Controller__doQuery('StopStreamingAndRecording')
 
         return {'RESULT': result}
 
@@ -91,7 +91,7 @@ class MonarchHD(Controller):
 
     def getStreamingVideoDataRate(self):
         """Used to acquire the average video data rate in kb/s (bit rate) that is currently programmed on the device."""
-        result = self.__doQuery('GetStreamingVideoDataRate')
+        result = self._Controller__doQuery('GetStreamingVideoDataRate')
 
         # BITRATE:<average bit rate>
         p = re.compile(u'BITRATE:(?P<bitrate>[A-Z]+)$', re.IGNORECASE)
@@ -105,13 +105,13 @@ class MonarchHD(Controller):
     def setStreamingVideoDataRate(self, bitrate):
         """Used to set the data rate (in kb/s) dynamically without stopping a current streaming operation."""
         command = '%s,%s' % ('SetStreamingVideoDataRate', bitrate)
-        result = self.__doQuery(command)
+        result = self._Controller__doQuery(command)
 
         return {'RESULT': result}
 
     def getRTSP(self):
         """Used to get the URL and port that is currently programmed for RTSP streaming."""
-        result = self.__doQuery('GetRTSP')
+        result = self._Controller__doQuery('GetRTSP')
 
         # URL,name,port
         p = re.compile(u'(?P<url>.+),(?P<name>.+),(?P<port>.+)', re.IGNORECASE)
@@ -127,13 +127,13 @@ class MonarchHD(Controller):
     def setRTSP(self, url, port):
         """Used to set the RTSP URL and port, as well as switch the streaming mode to RTSP on the device."""
         command = '%s,%s,$s' % ('SetRTSP', url, port)
-        result = self.__doQuery(command)
+        result = self._Controller__doQuery(command)
 
         return {'RESULT': result}
 
     def getRTMP(self):
         """Used to get the RMTP settings that are currently programmed."""
-        result = self.__doQuery('GetRTMP')
+        result = self._Controller__doQuery('GetRTMP')
 
         # URL,name,port
         p = re.compile(u'(?P<url>.+),(?P<name>.+)', re.IGNORECASE)
@@ -146,20 +146,20 @@ class MonarchHD(Controller):
     def setRTMP(self, url, stream, username, password):
         """Used to configure the RTMP parameters and set the streaming mode to RTMP."""
         command = '%s,%s,$s,%s' % ('SetRTMP', url, stream, username, password)
-        result = self.__doQuery(command)
+        result = self._Controller__doQuery(command)
 
         return {'RESULT': result}
 
 class MonarchHDX(Controller):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, ipAddress, username='admin', password='admin'):
+        super().__init__(ipAddress, username='admin', password='admin')
 
     ### STATUS ###
 
     def getStatus(self):
-        """Used to acquire the current stream and record status of a Monarch HD device."""
-        result = self.__doQuery('GetStatus')
+        """Used to acquire the current stream and record status of a Monarch HDX device."""
+        result = self._Controller__doQuery('GetStatus')
 
         # ENC1:<mode>,<state>, ENC2:<mode>,<state>, NAME:<devicename>
         p = re.compile(u'ENC1:(?P<enc1_mode>[A-Z]+),(?P<enc1_state>[A-Z]+),ENC2:(?P<enc2_mode>[A-Z]+),(?P<enc2_state>[A-Z]+),NAME:(?P<device_name>.+)$', re.IGNORECASE)
@@ -174,15 +174,15 @@ class MonarchHDX(Controller):
 
     ### STREAMING ###
 
-    def startStreaming(self):
-        """Used to start the stream function on a Monarch HD device that is set to RTMP mode."""
-        result = self.__doQuery('StartStreaming')
+    def startEncoder(self, enc):
+        """Used to start Encoder 1 or Encoder 2 on a Monarch HDX. The encoder will start in the encoding mode that has been set (e.g. RTSP streaming, RTMP streaming, or Record). If the Monarch HDX is in RTMP streaming mode, this call will also start the streaming process."""
+        result = self._Controller__doQuery(f'StartEncoder{enc}')
 
         return {'RESULT': result}
 
     def stopStreaming(self):
         """Used to stop the stream function on a Monarch HD device that is set to RTMP mode."""
-        result = self.__doQuery('StopStreaming')
+        result = self._Controller__doQuery('StopStreaming')
 
         return {'RESULT': result}
 
@@ -190,13 +190,13 @@ class MonarchHDX(Controller):
 
     def startRecording(self):
         """Used to start the record function on a Monarch HD device."""
-        result = self.__doQuery('StartRecording')
+        result = self._Controller__doQuery('StartRecording')
 
         return {'RESULT': result}
 
     def stopRecording(self):
         """Used to stop the record function on a Monarch HD device."""
-        result = self.__doQuery('StopRecording')
+        result = self._Controller__doQuery('StopRecording')
 
         return {'RESULT': result}
 
@@ -204,13 +204,13 @@ class MonarchHDX(Controller):
 
     def startStreamingAndRecording(self):
         """Used to start the stream (RTMP mode) and record functions simultaneously on a Monarch HD device."""
-        result = self.__doQuery('StartStreamingAndRecording')
+        result = self._Controller__doQuery('StartStreamingAndRecording')
 
         return {'RESULT': result}
 
     def stopStreamingAndRecording(self):
         """Used to stop the stream (RTMP mode) and record functions simultaneously on a Monarch HD device."""
-        result = self.__doQuery('StopStreamingAndRecording')
+        result = self._Controller__doQuery('StopStreamingAndRecording')
 
         return {'RESULT': result}
 
@@ -218,7 +218,7 @@ class MonarchHDX(Controller):
 
     def getStreamingVideoDataRate(self):
         """Used to acquire the average video data rate in kb/s (bit rate) that is currently programmed on the device."""
-        result = self.__doQuery('GetStreamingVideoDataRate')
+        result = self._Controller__doQuery('GetStreamingVideoDataRate')
 
         # BITRATE:<average bit rate>
         p = re.compile(u'BITRATE:(?P<bitrate>[A-Z]+)$', re.IGNORECASE)
@@ -232,13 +232,13 @@ class MonarchHDX(Controller):
     def setStreamingVideoDataRate(self, bitrate):
         """Used to set the data rate (in kb/s) dynamically without stopping a current streaming operation."""
         command = '%s,%s' % ('SetStreamingVideoDataRate', bitrate)
-        result = self.__doQuery(command)
+        result = self._Controller__doQuery(command)
 
         return {'RESULT': result}
 
     def getRTSP(self):
         """Used to get the URL and port that is currently programmed for RTSP streaming."""
-        result = self.__doQuery('GetRTSP')
+        result = self._Controller__doQuery('GetRTSP')
 
         # URL,name,port
         p = re.compile(u'(?P<url>.+),(?P<name>.+),(?P<port>.+)', re.IGNORECASE)
@@ -254,13 +254,13 @@ class MonarchHDX(Controller):
     def setRTSP(self, url, port):
         """Used to set the RTSP URL and port, as well as switch the streaming mode to RTSP on the device."""
         command = '%s,%s,$s' % ('SetRTSP', url, port)
-        result = self.__doQuery(command)
+        result = self._Controller__doQuery(command)
 
         return {'RESULT': result}
 
     def getRTMP(self):
         """Used to get the RMTP settings that are currently programmed."""
-        result = self.__doQuery('GetRTMP')
+        result = self._Controller__doQuery('GetRTMP')
 
         # URL,name,port
         p = re.compile(u'(?P<url>.+),(?P<name>.+)', re.IGNORECASE)
@@ -273,6 +273,6 @@ class MonarchHDX(Controller):
     def setRTMP(self, url, stream, username, password):
         """Used to configure the RTMP parameters and set the streaming mode to RTMP."""
         command = '%s,%s,$s,%s' % ('SetRTMP', url, stream, username, password)
-        result = self.__doQuery(command)
+        result = self._Controller__doQuery(command)
 
         return {'RESULT': result}
