@@ -19,10 +19,10 @@ class monarchhdx():
         url = self.BASE_URL % (self.ipAddress, command)
         if self.username:
             r = requests.get(url, auth=(self.username, self.password))
-            return r.content
+            return r.content.decode()
 
         r = requests.get(url)
-        return r.content
+        return r.content.decode()
 
     ### STATUS ###
 
